@@ -1,4 +1,3 @@
-
 package com.dealership;
 
 import java.io.BufferedWriter;
@@ -7,7 +6,7 @@ import java.io.IOException;
 
 public class ContractDataManager {
 
-    String filename  = "contracts.csv";
+     String filename = "contracts.csv";
 
     public void saveContract(Contract contract) {
 
@@ -20,22 +19,51 @@ public class ContractDataManager {
 
                 SalesContract salesContract = (SalesContract) contract;
 
-                // Get vehicle information
+                Vehicle vehicle = salesContract.getVehicleSold();
 
-                // Get sales contract information
+                String financeOption = salesContract.isFinanceOption() ? "YES" : "NO";
 
-                // Build CSV String
+                contractData = "SALE|" +
+                        salesContract.getDateOfContract() + "|" +
+                        salesContract.getCustomerName() + "|" +
+                        salesContract.getCustomerEmail() + "|" +
+                        vehicle.getVin() + "|" +
+                        vehicle.getYear() + "|" +
+                        vehicle.getMake() + "|" +
+                        vehicle.getModel() + "|" +
+                        vehicle.getVehicleType() + "|" +
+                        vehicle.getColor() + "|" +
+                        vehicle.getOdometer() + "|" +
+                        salesContract.getVehiclePrice() + "|" +
+                        salesContract.getTaxAmount() + "|" +
+                        salesContract.getRecordingFee() + "|" +
+                        salesContract.getProcessingFee() + "|" +
+                        salesContract.getTotalPrice() + "|" +
+                        financeOption + "|" +
+                        salesContract.getMonthlyPayment();
 
             } else if (contract instanceof LeaseContract) {
 
                 LeaseContract leaseContract = (LeaseContract) contract;
 
-                // Get vehicle information
+                Vehicle vehicle = leaseContract.getVehicleSold();
 
-                // Get lease contract information
-
-                // Build CSV String
-
+                contractData = "LEASE|" +
+                        leaseContract.getDateOfContract() + "|" +
+                        leaseContract.getCustomerName() + "|" +
+                        leaseContract.getCustomerEmail() + "|" +
+                        vehicle.getVin() + "|" +
+                        vehicle.getYear() + "|" +
+                        vehicle.getMake() + "|" +
+                        vehicle.getModel() + "|" +
+                        vehicle.getVehicleType() + "|" +
+                        vehicle.getColor() + "|" +
+                        vehicle.getOdometer() + "|" +
+                        leaseContract.getVehiclePrice() + "|" +
+                        leaseContract.getExpectedEndingValue() + "|" +
+                        leaseContract.getLeaseFee() + "|" +
+                        leaseContract.getTotalPrice() + "|" +
+                        leaseContract.getMonthlyPayment();
             }
 
             writer.write(contractData);

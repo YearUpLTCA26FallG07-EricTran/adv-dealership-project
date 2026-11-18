@@ -30,6 +30,25 @@ public class SalesContract extends Contract {
 
     }
 
+    public BigDecimal getTaxAmount() {
+        return taxAmount;
+    }
+
+    public BigDecimal getRecordingFee() {
+        return recordingFee;
+    }
+
+    public BigDecimal getProcessingFee() {
+        return processingFee;
+    }
+
+    public boolean isFinanceOption() {
+        return financeOption;
+    }
+
+    public BigDecimal getVehiclePrice() {
+        return vehiclePrice;
+    }
 
     @Override
     public BigDecimal getTotalPrice() {
