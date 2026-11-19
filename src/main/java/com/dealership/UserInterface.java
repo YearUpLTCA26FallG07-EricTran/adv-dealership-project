@@ -33,6 +33,7 @@ public class UserInterface {
                     [7] - List ALL vehicles
                     [8] - Add a vehicle
                     [9] - Remove a vehicle
+                    [10] - Create a Contract
                     [99] - Quit
                     
                     Select an option: """;
@@ -48,6 +49,7 @@ public class UserInterface {
                 case 7 -> processGetAllVehiclesRequest();
                 case 8 -> processAddVehicleRequest();
                 case 9 -> processRemoveVehicleRequest();
+                case 10 -> processContractInfo();
                 case 99 -> {}
 
                 default -> System.out.println("Invalid Input, Try again.");
@@ -221,4 +223,133 @@ public class UserInterface {
         }
 
     }
+
+    public void processContractInfo() {
+
+        String contractMenu = """
+            Select an option
+            [1] - Sale
+            [2] - Lease
+            [0] - Return
+            """;
+
+        int choice = Console.promptForInt(contractMenu);
+
+        switch (choice) {
+            case 1 -> processSalesContract();
+            case 2 -> processLeaseContract();
+            case 0 -> System.out.println("Returning to main menu.");
+            default -> System.out.println("Invalid option.");
+        }
+    }
+
+
+    public void processSalesContract() {
+
+        // 1. Collect customer information
+        String date = Console.promptForString("Enter year: ");
+
+        String customerName = Console.promptForString("Enter customer name: ");
+
+        String customerEmail = Console.promptForString("Enter customer email: ");
+
+        // 2. Find the vehicle in inventory using VIN
+        int vin = Console.promptForInt("Enter vehicle VIN: ");
+
+        Vehicle vehicleSold = null;
+
+        for (Vehicle vehicle : dealership.getAllVehicles()) {
+            if (vehicle.getVin() == vin) {
+                vehicleSold = vehicle;
+                break;
+            }
+        }
+
+        // 3. Make sure the vehicle exists
+        if (vehicleSold == null) {
+            System.out.println("Vehicle not found.");
+            return;
+        }
+
+        // 4. Ask whether the customer wants financing
+        boolean financeOption = Console.promptForString(
+                "Will the customer finance? (yes/no): "
+        ).equalsIgnoreCase("yes");
+
+        // 5. Create the sales contract using the vehicle information
+        SalesContract contract = new SalesContract(
+                date,
+                customerName,
+                customerEmail,
+                vehicleSold,
+                vehicleSold.getPrice(),
+                financeOption
+        );
+
+        // 6. Save the contract to contracts.csv
+        ContractDataManager contractDataManager = new ContractDataManager();
+
+        contractDataManager.saveContract(contract);
+
+        // 7. Remove the sold vehicle from inventory
+        dealership.removeVehicle(vehicleSold);
+
+        // 8. Save the updated inventory
+        DealershipFileManager.saveDealership(dealership);
+
+        System.out.println("Sales contract successful!");
+    }
+
+
+
+    public void processLeaseContract() {
+
+        // 1. Collect customer information
+        String date = Console.promptForString("Enter year: ");
+
+        String customerName = Console.promptForString("Enter customer name: ");
+
+        String customerEmail = Console.promptForString("Enter customer email: ");
+
+        // 2. Find the vehicle in inventory using VIN
+        int vin = Console.promptForInt("Enter vehicle VIN: ");
+
+        Vehicle vehicleSold = null;
+
+        for (Vehicle vehicle : dealership.getAllVehicles()) {
+            if (vehicle.getVin() == vin) {
+                vehicleSold = vehicle;
+                break;
+            }
+        }
+
+        // 3. Make sure the vehicle exists
+        if (vehicleSold == null) {
+            System.out.println("Vehicle not found.");
+            return;
+        }
+
+        // 4. Create the lease contract
+        LeaseContract contract = new LeaseContract(
+                date,
+                customerName,
+                customerEmail,
+                vehicleSold,
+                vehicleSold.getPrice()
+        );
+
+        // 5. Save the contract to contracts.csv
+        ContractDataManager contractDataManager = new ContractDataManager();
+
+        contractDataManager.saveContract(contract);
+
+        // 6. Remove the leased vehicle from inventory
+        dealership.removeVehicle(vehicleSold);
+
+        // 7. Save the updated inventory
+        DealershipFileManager.saveDealership(dealership);
+
+        System.out.println("Lease contract successful!");
+    }
+
 }
